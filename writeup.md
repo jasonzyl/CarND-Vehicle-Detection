@@ -75,7 +75,7 @@ I implemented the sliding window search in 6 steps (corresponding to subsections
 3. Given an image, a window and a scale, scale down the window and predict whether the window on the scaled-down image contains a car
 4. Putting everything together: given a window and a list of scales, for each scale, generate all windows based on the scaled-down image, predict whether each window is a car image. If there is a match, scale the window up to match the original size of the image, and collect the positive windows into a list.
 
-####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+### Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 Below are 3 images demonstrating how the pipeline is working:
 ![Sliding Window Search with Multiple Scales][image10] ![Heatmap][image11] ![Bounding Boxes from Heatmap][image12]
@@ -95,7 +95,7 @@ After I can identify windows which look like a car, I did 2 steps to draw the bo
 
 #### Here are six frames with detected windows:
 
-![Frame 1][image13] ![Frame 2][image16] ![Frame 3][image19] ![Frame 4][image22] ![Frame 5][image25] ![Frame 6][image28]
+![Frame 1](./output_images/frame1_sliding_window.jpg 250x250) ![Frame 2][image16] ![Frame 3][image19] ![Frame 4][image22] ![Frame 5][image25] ![Frame 6][image28]
 
 #### Here are heatmaps from those windows
 ![Frame 1][image14] ![Frame 2][image17] ![Frame 3][image20] ![Frame 4][image23] ![Frame 5][image26] ![Frame 6][image29]
@@ -103,9 +103,9 @@ After I can identify windows which look like a car, I did 2 steps to draw the bo
 ### Here the resulting bounding boxes:
 ![Frame 1][image15] ![Frame 2][image18] ![Frame 3][image21] ![Frame 4][image24] ![Frame 5][image27] ![Frame 6][image30]
 
-###Discussion
+## Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+### Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 1. The bounding boxes are not very stable from frame to frame, possibly because the sliding window search is not granular enough so that when a vehicle moves a small distance in the next frame the window can also only moves a small distance. I could probably improve this by identifying the same vehicles between frames and do some estimation on the size and the position of the vehicle, based on 2 assumptions: the size will not change a lot and the speed will not change a lot.
 2. When 2 vehicles overlap, they are identified as one car. Not sure how to improve that though.
