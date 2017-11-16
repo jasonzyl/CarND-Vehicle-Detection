@@ -95,7 +95,7 @@ After I can identify windows which look like a car, I did 2 steps to draw the bo
 
 #### Here are six frames with detected windows:
 
-![Frame 1](./output_images/frame1_sliding_window.jpg 250x250) ![Frame 2][image16] ![Frame 3][image19] ![Frame 4][image22] ![Frame 5][image25] ![Frame 6][image28]
+![Frame 1][image13] ![Frame 2][image16] ![Frame 3][image19] ![Frame 4][image22] ![Frame 5][image25] ![Frame 6][image28]
 
 #### Here are heatmaps from those windows
 ![Frame 1][image14] ![Frame 2][image17] ![Frame 3][image20] ![Frame 4][image23] ![Frame 5][image26] ![Frame 6][image29]
