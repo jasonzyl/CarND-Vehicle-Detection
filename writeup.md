@@ -1,40 +1,35 @@
-##Writeup Template
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
----
-
-**Vehicle Detection Project**
-
-The goals / steps of this project are the following:
-
-* Perform a Histogram of Oriented Gradients (HOG) feature extraction on a labeled training set of images and train a classifier Linear SVM classifier
-* Optionally, you can also apply a color transform and append binned color features, as well as histograms of color, to your HOG feature vector.
-* Note: for those first two steps don't forget to normalize your features and randomize a selection for training and testing.
-* Implement a sliding-window technique and use your trained classifier to search for vehicles in images.
-* Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
-* Estimate a bounding box for vehicles detected.
-
 [//]: # (Image References)
 [image1]: ./output_images/hog_extractor_car.jpg
 [image2]: ./output_images/hog_extractor_car_luv_channel1.jpg
 [image3]: ./output_images/hog_extractor_car_luv_channel2.jpg
 [image4]: ./output_images/hog_extractor_car_luv_channel3.jpg
 [image5]: ./output_images/hog_extractor_video.jpg
-[image6]: ./output_images/hog_extrhog_extractor_video_cropped.jpg
+[image6]: ./output_images/hog_extractor_video_cropped.jpg
 [image7]: ./output_images/hog_extractor_video_luv_channel1.jpg
 [image8]: ./output_images/hog_extractor_video_luv_channel2.jpg
 [image9]: ./output_images/hog_extractor_video_luv_channel3.jpg
 [image10]: ./output_images/predict_windows_multiple_scales.jpg
 [image11]: ./output_images/predict_windows_heatmap.jpg
 [image12]: ./output_images/predict_windows_bounding_boxes.jpg
+[image13]: ./output_images/frame1_sliding_window.jpg
+[image14]: ./output_images/frame1_heatmap.jpg
+[image15]: ./output_images/frame1_bounding_boxes.jpg
+[image16]: ./output_images/frame2_sliding_window.jpg
+[image17]: ./output_images/frame2_heatmap.jpg
+[image18]: ./output_images/frame2_bounding_boxes.jpg
+[image19]: ./output_images/frame3_sliding_window.jpg
+[image20]: ./output_images/frame3_heatmap.jpg
+[image21]: ./output_images/frame3_bounding_boxes.jpg
+[image22]: ./output_images/frame4_sliding_window.jpg
+[image23]: ./output_images/frame4_heatmap.jpg
+[image24]: ./output_images/frame4_bounding_boxes.jpg
+[image25]: ./output_images/frame5_sliding_window.jpg
+[image26]: ./output_images/frame5_heatmap.jpg
+[image27]: ./output_images/frame5_bounding_boxes.jpg
+[image28]: ./output_images/frame6_sliding_window.jpg
+[image29]: ./output_images/frame6_heatmap.jpg
+[image30]: ./output_images/frame6_bounding_boxes.jpg
 
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
 
 ## Code Location
 All code mentioned below is located at the [Jupyter notebook](./notebook.ipynb), and it's broken down by different sections (like `1 HOG Feature Extraction`) and subsections (like `1.1 Extractor Class`).
@@ -53,9 +48,7 @@ Below are an image from given dataset and its HOG images using LUV color space:
 
 Below are an image from one of the test images and its HOG images using LUV color space:
 
-![Video Image][image5]
-
-![Video Image (Cropped)][image6] ![Video Image (L channel)][image7] ![Video Image (U channel)][image8] ![Video Image (V channel)][image9]
+![Video Image][image5] ![Video Image (Cropped)][image6] ![Video Image (L channel)][image7] ![Video Image (U channel)][image8] ![Video Image (V channel)][image9]
 
 ### Explain how you settled on your final choice of HOG parameters.
 
@@ -76,13 +69,11 @@ I trained a linear SVM using all default options: `auto` gamma, `rbf` kernal and
 
 ### Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I implemented the sliding window search in 6 steps (corresponding to subsections 5.1 - 6.2 in my code):
+I implemented the sliding window search in 6 steps (corresponding to subsections 5.1 - 5.4 in my code):
 1. Given an image, a window size and the overlap distance, generate all windows
 2. Given an image and a window, predict whether the window is a car image
 3. Given an image, a window and a scale, scale down the window and predict whether the window on the scaled-down image contains a car
 4. Putting everything together: given a window and a list of scales, for each scale, generate all windows based on the scaled-down image, predict whether each window is a car image. If there is a match, scale the window up to match the original size of the image, and collect the positive windows into a list.
-5. For all positive windows in a frame, increase the 'heat' on the window in a heatmap
-6. For the heatmap, call `scipy.ndimage.measurements.label()` to label the different separate 'cars', and finally get the bounding boxes on those labels.
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
@@ -91,34 +82,30 @@ Below are 3 images demonstrating how the pipeline is working:
 
 I cropped the image before processing (400:656 on y-axis) because the upper part of the image is unlikely to have cars.
 
-### Video Implementation
+## Video Implementation
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+### Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
+Here's a [link to my video result](./project_video_output.mp4)
 
+### Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
+After I can identify windows which look like a car, I did 2 steps to draw the bounding boxes on separate car images (corresponding to 6.1 - 6.2 in my code):
+1. For all positive windows in a frame, increase the 'heat' on the window in a heatmap
+2. For the heatmap, call `scipy.ndimage.measurements.label()` to label the different separate 'cars', and finally get the bounding boxes on those labels.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
+#### Here are six frames with detected windows:
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+![Frame 1][image13] ![Frame 2][image16] ![Frame 3][image19] ![Frame 4][image22] ![Frame 5][image25] ![Frame 6][image28]
 
-### Here are six frames and their corresponding heatmaps:
+#### Here are heatmaps from those windows
+![Frame 1][image14] ![Frame 2][image17] ![Frame 3][image20] ![Frame 4][image23] ![Frame 5][image26] ![Frame 6][image29]
 
-![alt text][image5]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
-
-
----
+### Here the resulting bounding boxes:
+![Frame 1][image15] ![Frame 2][image18] ![Frame 3][image21] ![Frame 4][image24] ![Frame 5][image27] ![Frame 6][image30]
 
 ###Discussion
 
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+1. The bounding boxes are not very stable from frame to frame, possibly because the sliding window search is not granular enough so that when a vehicle moves a small distance in the next frame the window can also only moves a small distance. I could probably improve this by identifying the same vehicles between frames and do some estimation on the size and the position of the vehicle, based on 2 assumptions: the size will not change a lot and the speed will not change a lot.
+2. When 2 vehicles overlap, they are identified as one car. Not sure how to improve that though.
