@@ -78,7 +78,12 @@ I implemented the sliding window search in 6 steps (corresponding to subsections
 ### Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 Below are 3 images demonstrating how the pipeline is working:
-![Sliding Window Search with Multiple Scales][image10] ![Heatmap][image11] ![Bounding Boxes from Heatmap][image12]
+
+![Sliding Window Search with Multiple Scales][image10]
+
+![Heatmap][image11]
+
+![Bounding Boxes from Heatmap][image12]
 
 I cropped the image before processing (400:656 on y-axis) because the upper part of the image is unlikely to have cars.
 
